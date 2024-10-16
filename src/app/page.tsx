@@ -1,4 +1,4 @@
-import {GitHubLogoIcon, LinkedInLogoIcon} from "@radix-ui/react-icons";
+import {CubeIcon, GitHubLogoIcon, LinkedInLogoIcon} from "@radix-ui/react-icons";
 import Image from "next/image";
 
 export default function Home() {
@@ -35,6 +35,14 @@ export default function Home() {
                     rel="noopener noreferrer"
                 >
                     <LinkedInLogoIcon className="h-5 w-5"/>
+                </a>
+                <a
+                    className="flex items-center gap-2 hover:underline hover:underline-offset-4"
+                    href="https://www.npmjs.com/~oyahiro"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                    <CubeIcon className="h-5 w-5"/>
                 </a>
             </footer>
         </div>

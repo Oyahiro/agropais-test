@@ -1,3 +1,4 @@
+import {validateIdentification} from "ecuador-utils";
 import * as yup from "yup";
 
 export const OPTIONS = [
@@ -23,7 +24,9 @@ export const userValidationSchema = yup.object().shape({
     ci: yup
         .string()
         .required('The identity card is obligatory')
-        .matches(/^\d{10}$/, 'The identity card must have 10 digits'),
+        .test('identification-number', 'Invalid format', (value) => {
+            return validateIdentification(value);
+        }),
     dateOfBirth: yup
         .date()
         .required('The date of birth is obligatory')
@@ -42,7 +45,19 @@ export const userValidationSchema = yup.object().shape({
             then: (schema) =>
                 schema
                     .required('The RUC number is obligatory')
-                    .matches(/^\d{13}$/, 'The RUC must have 13 digits'),
+                    .test('ruc-number', 'Invalid format', (value) => {
+                        if (value.length !== 13) {
+                            return false;
+                        }
+
+                        const identification = value.slice(0, 10);
+                        if (!validateIdentification(identification)) {
+                            return false;
+                        }
+
+                        const suffix = value.slice(10, 13);
+                        return suffix === "001";
+                    }),
             otherwise: (schema) => schema.notRequired(),
         }),
     gender: yup.string().required('The gender is obligatory'),
