@@ -117,7 +117,6 @@ export default function UserForm() {
                 toast({
                     title: "Error",
                     description: "Failed to save the user data",
-                    type: "error",
                 });
             }
 

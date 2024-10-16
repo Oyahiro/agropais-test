@@ -3,57 +3,6 @@ import {NextResponse} from 'next/server';
 import {z} from "zod";
 import {supabase} from "../../../../lib/supabase-client";
 
-const users = [
-    {
-        id: 1,
-        name: "Juan",
-        lastName: "Pérez",
-        ci: "1234567890",
-        dateOfBirth: "1990-01-01",
-        hasRuc: true,
-        rucNumber: "1234567890123",
-        gender: "male",
-        hasFarm: true,
-        farmHa: 2.4,
-        farmName: "Finca Los Pinos",
-        crops: ["Maíz", "Trigo"],
-        hasWorkers: true,
-        totalWorkers: 5,
-        menWorkers: 3,
-        womanWorkers: 2,
-        over18Workers: 4,
-        under18Workers: 1,
-        minorWorkersOcuppacion: "Cosecha",
-        hasPregnandWorkers: false,
-        pregnandWorkers: 0,
-        pregnandWorkersOcuppacion: ""
-    },
-    {
-        id: 2,
-        name: "Ana",
-        lastName: "Gómez",
-        ci: "0987654321",
-        dateOfBirth: "1985-05-15",
-        hasRuc: false,
-        rucNumber: "",
-        gender: "female",
-        hasFarm: false,
-        farmHa: 0,
-        farmName: "",
-        crops: [],
-        hasWorkers: false,
-        totalWorkers: 0,
-        menWorkers: 0,
-        womanWorkers: 0,
-        over18Workers: 0,
-        under18Workers: 0,
-        minorWorkersOcuppacion: "",
-        hasPregnandWorkers: false,
-        pregnandWorkers: 0,
-        pregnandWorkersOcuppacion: ""
-    }
-];
-
 const userSchema = z.object({
     name: z.string(),
     lastName: z.string(),
