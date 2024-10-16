@@ -1,0 +1,24 @@
+export type User = {
+    id: number;
+    name: string;
+    lastName: string;
+    ci: string;
+    dateOfBirth: string;
+    hasRuc: boolean;
+    rucNumber: string;
+    gender: string;
+    hasFarm: boolean;
+    farmHa: number;
+    farmName: string;
+    crops: string[];
+    hasWorkers: boolean;
+    totalWorkers: number;
+    menWorkers: number;
+    womanWorkers: number;
+    over18Workers: number;
+    under18Workers: number;
+    minorWorkersOcuppacion: string;
+    hasPregnandWorkers: boolean;
+    pregnandWorkers: number;
+    pregnandWorkersOcuppacion: string;
+};
