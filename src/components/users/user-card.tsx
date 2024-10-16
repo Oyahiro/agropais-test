@@ -15,7 +15,8 @@ import {
 import {Button} from "@/components/ui/button";
 import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card";
 import {useToast} from "@/hooks/use-toast";
-import {HobbyKnifeIcon} from "@radix-ui/react-icons";
+import {useUserStore} from "@/store/userStore";
+import {HobbyKnifeIcon, Pencil1Icon} from "@radix-ui/react-icons";
 import {useRouter} from "next/navigation";
 import * as React from "react";
 
@@ -27,7 +28,12 @@ const UserCard = ({user}: Props) => {
     const router = useRouter();
     const {toast} = useToast()
 
+    const selectUser = useUserStore((state) => state.selectUser);
     const [isDeleting, setIsDeleting] = React.useState(false);
+
+    const handleEdit = () => {
+        selectUser(user);
+    };
 
     const handleDelete = async () => {
         setIsDeleting(true);
@@ -97,7 +103,7 @@ const UserCard = ({user}: Props) => {
                     </CardContent>
                 </Card>
 
-                {user.has_farm && (
+                {(user.has_farm || user.crops.length > 0) && (
                     <Card className="border shadow-sm">
                         <CardHeader>
                             <CardTitle className="text-md font-semibold">Farm Information</CardTitle>
@@ -195,7 +201,11 @@ const UserCard = ({user}: Props) => {
                     </Card>
                 )}
             </div>
-            <div className="flex justify-end">
+            <div className="flex justify-end gap-2">
+                <Button variant="secondary" className="gap-2" onClick={handleEdit}>
+                    <Pencil1Icon className="h-4 w-4"/>
+                    Edit
+                </Button>
                 <AlertDialog>
                     <AlertDialogTrigger>
                         <Button variant="destructive" className="gap-2">

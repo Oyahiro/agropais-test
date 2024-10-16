@@ -52,7 +52,7 @@ export function Navbar() {
                                     Calamardo, utilicé tu clarinete para destrabar el retrete. ~Bob Esponja
                                 </ListItem>
                                 <ListItem href="/crops" title="Crops">
-                                    El picador, crimina, mutilador. ~Calamardo.
+                                    El picador, criminal, mutilador. ~Calamardo.
                                 </ListItem>
                             </ul>
                         </NavigationMenuContent>

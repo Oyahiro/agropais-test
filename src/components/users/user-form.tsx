@@ -14,11 +14,14 @@ import FarmFormSection from "@/components/users/farm-form-section";
 import WorkersFormSection from "@/components/users/workers-form-section";
 import {useToast} from "@/hooks/use-toast";
 import {cn} from "@/lib/utils";
+import {useUserStore} from "@/store/userStore";
+import {capitalizeFirstLetter, getString} from "@/utils/string.utils";
 import {OPTIONS, UserFormData, userValidationSchema} from "@/utils/validation-schemas";
 import {yupResolver} from "@hookform/resolvers/yup";
 import {CalendarIcon, PlusIcon} from "@radix-ui/react-icons";
 import {format, subDays} from "date-fns";
 import {AnimatePresence, motion} from "framer-motion";
+import {useRouter} from "next/navigation";
 import * as React from "react";
 import {useCallback, useEffect, useState} from "react";
 import {useForm} from "react-hook-form";
@@ -27,39 +30,43 @@ interface Props {
     toggleForm: () => void;
 }
 
-export default function UserForm({toggleForm}: Props) {
+const UserForm = ({toggleForm}: Props) => {
+    const router = useRouter();
     const {toast} = useToast()
+
+    const selectedUser = useUserStore((state) => state.selectedUser);
+    const selectUser = useUserStore((state) => state.selectUser);
 
     const [open, setOpen] = useState(false);
 
     const form = useForm<UserFormData>({
         resolver: yupResolver(userValidationSchema),
         defaultValues: {
-            name: "",
-            lastName: "",
-            ci: "",
-            dateOfBirth: new Date(),
-            hasRuc: false,
-            rucNumber: "",
-            gender: "",
-            hasFarm: false,
-            farmHa: undefined,
-            farmName: "",
-            crops: [],
-            hasWorkers: false,
-            totalWorkers: undefined,
-            menWorkers: undefined,
-            womanWorkers: undefined,
-            over18Workers: undefined,
-            under18Workers: undefined,
-            minorWorkersOccupation: "",
-            hasPregnantWorkers: false,
-            pregnantWorkers: undefined,
-            pregnantWorkersOccupation: "",
+            name: selectedUser?.name || "",
+            lastName: selectedUser?.last_name || "",
+            ci: selectedUser?.ci || "",
+            dateOfBirth: selectedUser ? new Date(selectedUser.date_of_birth) : new Date(),
+            hasRuc: selectedUser?.has_ruc || false,
+            rucNumber: selectedUser?.ruc_number || undefined,
+            gender: selectedUser?.gender || "",
+            hasFarm: selectedUser?.has_farm || false,
+            farmHa: selectedUser?.farm_ha || undefined,
+            farmName: selectedUser?.farm_name || undefined,
+            crops: selectedUser?.crops.map((crop) => crop.crop_name) || [],
+            hasWorkers: selectedUser?.has_workers || false,
+            totalWorkers: selectedUser?.total_workers || undefined,
+            menWorkers: selectedUser?.men_workers || undefined,
+            womanWorkers: selectedUser?.woman_workers || undefined,
+            over18Workers: selectedUser?.over18_workers || undefined,
+            under18Workers: selectedUser?.under18_workers || undefined,
+            minorWorkersOccupation: selectedUser?.minor_workers_occupation || undefined,
+            hasPregnantWorkers: selectedUser?.has_pregnant_workers || false,
+            pregnantWorkers: selectedUser?.pregnant_workers || undefined,
+            pregnantWorkersOccupation: selectedUser?.pregnant_workers_occupation || undefined,
         },
     });
 
-    const {watch, setValue} = form;
+    const {watch, setValue, reset} = form;
     const hasRuc = watch("hasRuc");
     const hasFarm = watch("hasFarm");
     const hasWorkers = watch("hasWorkers");
@@ -67,15 +74,54 @@ export default function UserForm({toggleForm}: Props) {
     const hasPregnantWorkers = watch("hasPregnantWorkers");
 
     useEffect(() => {
+        if (selectedUser) {
+            const crops = selectedUser.crops.map((crop) => crop.crop_name);
+
+            reset(
+                {
+                    name: selectedUser.name,
+                    lastName: selectedUser.last_name,
+                    ci: selectedUser.ci,
+                    dateOfBirth: new Date(selectedUser.date_of_birth),
+                    hasRuc: selectedUser.has_ruc,
+                    rucNumber: selectedUser.ruc_number || undefined,
+                    gender: selectedUser.gender,
+                    hasFarm: selectedUser.has_farm,
+                    farmHa: selectedUser.farm_ha || undefined,
+                    farmName: selectedUser.farm_name || undefined,
+                    crops: crops,
+                    hasWorkers: selectedUser.has_workers,
+                    totalWorkers: selectedUser.total_workers || undefined,
+                    menWorkers: selectedUser.men_workers || undefined,
+                    womanWorkers: selectedUser.woman_workers || undefined,
+                    over18Workers: selectedUser.over18_workers || undefined,
+                    under18Workers: selectedUser.under18_workers || undefined,
+                    minorWorkersOccupation: selectedUser.minor_workers_occupation || undefined,
+                    hasPregnantWorkers: selectedUser.has_pregnant_workers,
+                    pregnantWorkers: selectedUser.pregnant_workers || undefined,
+                    pregnantWorkersOccupation: selectedUser.pregnant_workers_occupation || undefined,
+                    family: selectedUser.family_members.map((member) => ({
+                        name: member.name,
+                        lastName: member.last_name,
+                        ci: member.ci,
+                    })),
+                },
+            );
+        } else {
+            reset();
+        }
+    }, [selectedUser, setValue, reset]);
+
+    useEffect(() => {
         if (!hasRuc) {
-            setValue("rucNumber", "");
+            setValue("rucNumber", undefined);
         }
     }, [hasRuc, setValue]);
 
     useEffect(() => {
         if (!hasFarm) {
             setValue("farmHa", undefined);
-            setValue("farmName", "");
+            setValue("farmName", undefined);
         }
     }, [hasFarm, setValue]);
 
@@ -89,7 +135,7 @@ export default function UserForm({toggleForm}: Props) {
             setValue("minorWorkersOccupation", "");
             setValue("hasPregnantWorkers", false);
             setValue("pregnantWorkers", undefined);
-            setValue("pregnantWorkersOccupation", "");
+            setValue("pregnantWorkersOccupation", undefined);
         }
     }, [hasWorkers, setValue]);
 
@@ -102,14 +148,14 @@ export default function UserForm({toggleForm}: Props) {
     useEffect(() => {
         if (!hasPregnantWorkers) {
             setValue("pregnantWorkers", undefined);
-            setValue("pregnantWorkersOccupation", "");
+            setValue("pregnantWorkersOccupation", undefined);
         }
     }, [hasPregnantWorkers, setValue]);
 
     const onSubmit = async (data: UserFormData) => {
         try {
-            const response = await fetch("/api/users", {
-                method: "POST",
+            const response = await fetch(selectedUser ? `/api/users/${selectedUser.id}` : "/api/users", {
+                method: selectedUser ? "PUT" : "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
@@ -119,20 +165,20 @@ export default function UserForm({toggleForm}: Props) {
             if (!response.ok) {
                 toast({
                     title: "Error",
-                    description: "Failed to save the user data",
+                    description: `Failed to ${selectedUser ? "update" : "create"} the user`,
+                });
+            } else {
+                toast({
+                    title: "Success",
+                    description: `User ${selectedUser ? "updated" : "created"} successfully`,
                 });
             }
 
-            await response.json();
-
-            toast({
-                title: "Scheduled: Catch up",
-                description: "User saved successfully",
-            })
-
             form.reset();
             setValue("crops", []);
+            selectUser(null);
             toggleForm();
+            router.refresh()
         } catch (error) {
             console.error("Error saving user:", error);
         }
@@ -253,19 +299,20 @@ export default function UserForm({toggleForm}: Props) {
                         name="gender"
                         render={({field}) => (
                             <FormItem>
-                                <FormLabel>Gender</FormLabel>
-                                <FormControl>
-                                    <Select onValueChange={field.onChange} value={field.value}>
+                                <FormLabel>Gender {field.value}</FormLabel>
+                                <Select onValueChange={field.onChange} defaultValue={field.value}
+                                >
+                                    <FormControl>
                                         <SelectTrigger>
                                             <SelectValue placeholder="Select your gender"/>
                                         </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="male">Male</SelectItem>
-                                            <SelectItem value="female">Female</SelectItem>
-                                            <SelectItem value="other">Other</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                </FormControl>
+                                    </FormControl>
+                                    <SelectContent>
+                                        <SelectItem value="male">Male</SelectItem>
+                                        <SelectItem value="female">Female</SelectItem>
+                                        <SelectItem value="other">Other</SelectItem>
+                                    </SelectContent>
+                                </Select>
                                 <FormMessage/>
                             </FormItem>
                         )}
@@ -283,6 +330,10 @@ export default function UserForm({toggleForm}: Props) {
                                         onChange={(value) => {
                                             field.onChange(value.map((option) => option.value));
                                         }}
+                                        value={(field.value || []).map((crop) => ({
+                                            value: getString(crop),
+                                            label: capitalizeFirstLetter(crop)
+                                        }))}
                                         defaultOptions={OPTIONS}
                                         placeholder="Select crops..."
                                         emptyIndicator={
@@ -406,12 +457,14 @@ export default function UserForm({toggleForm}: Props) {
 
                 <FamilyMemberList form={form}/>
 
-                <div className="flex justify-end gap-4">
-                    <Button className="mt-8" type="button" variant="outline" onClick={onCancel}>Cancel</Button>
-                    <Button className="mt-8" type="submit">Save</Button>
+                <div className="flex justify-end gap-4 items-center">
+                    <Button type="button" variant="outline" onClick={onCancel}>Cancel</Button>
+                    <Button type="submit">{selectedUser ? "Update" : "Save"}</Button>
                 </div>
             </form>
             <FamilyMemberDialog open={open} setOpen={setOpen} form={form}/>
         </Form>
     );
 }
+
+export default UserForm;
