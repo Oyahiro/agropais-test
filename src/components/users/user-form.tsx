@@ -12,6 +12,7 @@ import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/c
 import {Switch} from "@/components/ui/switch";
 import FarmFormSection from "@/components/users/farm-form-section";
 import WorkersFormSection from "@/components/users/workers-form-section";
+import {useToast} from "@/hooks/use-toast";
 import {cn} from "@/lib/utils";
 import {OPTIONS, UserFormData, userValidationSchema} from "@/utils/validation-schemas";
 import {yupResolver} from "@hookform/resolvers/yup";
@@ -24,6 +25,8 @@ import {useForm} from "react-hook-form";
 
 
 export default function UserForm() {
+    const {toast} = useToast()
+
     const [open, setOpen] = useState(false);
 
     const form = useForm<UserFormData>({
@@ -100,8 +103,36 @@ export default function UserForm() {
         }
     }, [hasPregnantWorkers, setValue]);
 
-    const onSubmit = (data: UserFormData) => {
-        console.log(data);
+    const onSubmit = async (data: UserFormData) => {
+        try {
+            const response = await fetch("/api/users", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(data),
+            });
+
+            if (!response.ok) {
+                toast({
+                    title: "Error",
+                    description: "Failed to save the user data",
+                    type: "error",
+                });
+            }
+
+            await response.json();
+
+            toast({
+                title: "Scheduled: Catch up",
+                description: "User saved successfully",
+            })
+
+            form.reset();
+            setValue("crops", []);
+        } catch (error) {
+            console.error("Error saving user:", error);
+        }
     };
 
     return (
