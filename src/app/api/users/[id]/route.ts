@@ -4,7 +4,6 @@ import {supabase} from "../../../../../lib/supabase-client";
 export async function PUT(req: Request, {params}: { params: { id: string } }) {
     const {id} = params;
     const body = await req.json();
-    console.log("body", body);
 
     const {
         name,
@@ -117,6 +116,7 @@ export async function PUT(req: Request, {params}: { params: { id: string } }) {
 
         return NextResponse.json({message: `User with id ${id} updated successfully`}, {status: 200});
     } catch (error) {
+        console.error("Error updating user:", error);
         return NextResponse.json({message: "Server error"}, {status: 500});
     }
 }
