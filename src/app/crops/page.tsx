@@ -15,14 +15,13 @@ const columns: ColumnDef<CropSummary>[] = [
 ];
 
 async function getCropsData(): Promise<CropSummary[]> {
-    // const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/crops`);
-    //
-    // if (!response.ok) {
-    //     throw new Error("Error fetching crops data");
-    // }
-    //
-    // return response.json();
-    return []
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/crops`);
+
+    if (!response.ok) {
+        throw new Error("Error fetching crops data");
+    }
+
+    return response.json();
 }
 
 export default async function CropsPage() {
