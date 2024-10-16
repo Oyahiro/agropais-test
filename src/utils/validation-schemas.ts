@@ -1,5 +1,13 @@
 import * as yup from "yup";
 
+export const OPTIONS = [
+    {value: 'apple', label: 'Apple'},
+    {value: 'banana', label: 'Banana'},
+    {value: 'orange', label: 'Orange'},
+    {value: 'grape', label: 'Grape'},
+    {value: 'strawberry', label: 'Strawberry'},
+];
+
 export const userValidationSchema = yup.object().shape({
     name: yup.string().required('The name is obligatory'),
     lastName: yup.string().required('The last name is obligatory'),

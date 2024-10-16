@@ -19,7 +19,8 @@ export default async function UsersPage() {
 
     return (
         <div
-            className="items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
+            className="items-center justify-items-center min-h-screen p-12 pb-20 gap-16 font-[family-name:var(--font-geist-sans)]">
+            <h2 className="mb-8 text-center text-3xl font-bold">Users</h2>
             <UserForm/>
         </div>
     )

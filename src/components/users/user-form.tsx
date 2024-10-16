@@ -1,15 +1,22 @@
 "use client"
 
+import MultipleSelector from "@/components/system-design/multiple-selector";
 import {Button} from "@/components/ui/button";
+import {Calendar} from "@/components/ui/calendar";
 import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/components/ui/form";
 import {Input} from "@/components/ui/input";
+import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 import {Switch} from "@/components/ui/switch";
 import FarmFormSection from "@/components/users/farm-form-section";
 import WorkersFormSection from "@/components/users/workers-form-section";
-import {UserFormData, userValidationSchema} from "@/utils/validation-schemas";
+import {cn} from "@/lib/utils";
+import {OPTIONS, UserFormData, userValidationSchema} from "@/utils/validation-schemas";
 import {yupResolver} from "@hookform/resolvers/yup";
+import {CalendarIcon} from "@radix-ui/react-icons";
+import {format} from "date-fns";
 import {AnimatePresence, motion} from "framer-motion";
+import {useEffect} from "react";
 import {useForm} from "react-hook-form";
 
 
@@ -41,10 +48,52 @@ export default function UserForm() {
         },
     });
 
-    const {watch} = form;
+    const {watch, setValue} = form;
     const hasRuc = watch("hasRuc");
     const hasFarm = watch("hasFarm");
     const hasWorkers = watch("hasWorkers");
+    const under18Workers = watch("under18Workers");
+    const hasPregnantWorkers = watch("hasPregnantWorkers");
+
+    useEffect(() => {
+        if (!hasRuc) {
+            setValue("rucNumber", "");
+        }
+    }, [hasRuc, setValue]);
+
+    useEffect(() => {
+        if (!hasFarm) {
+            setValue("farmHa", undefined);
+            setValue("farmName", "");
+        }
+    }, [hasFarm, setValue]);
+
+    useEffect(() => {
+        if (!hasWorkers) {
+            setValue("totalWorkers", undefined);
+            setValue("menWorkers", undefined);
+            setValue("womanWorkers", undefined);
+            setValue("over18Workers", undefined);
+            setValue("under18Workers", undefined);
+            setValue("minorWorkersOccupation", "");
+            setValue("hasPregnantWorkers", false);
+            setValue("pregnantWorkers", undefined);
+            setValue("pregnantWorkersOccupation", "");
+        }
+    }, [hasWorkers, setValue]);
+
+    useEffect(() => {
+        if (!((under18Workers || 0) > 0)) {
+            setValue("minorWorkersOccupation", "");
+        }
+    }, [under18Workers, setValue]);
+
+    useEffect(() => {
+        if (!hasPregnantWorkers) {
+            setValue("pregnantWorkers", undefined);
+            setValue("pregnantWorkersOccupation", "");
+        }
+    }, [hasPregnantWorkers, setValue]);
 
     const onSubmit = (data: UserFormData) => {
         console.log(data);
@@ -96,19 +145,47 @@ export default function UserForm() {
                         )}
                     />
 
-                    {/*<FormField*/}
-                    {/*    control={form.control}*/}
-                    {/*    name="dateOfBirth"*/}
-                    {/*    render={({field}) => (*/}
-                    {/*        <FormItem>*/}
-                    {/*            <FormLabel>Fecha de Nacimiento</FormLabel>*/}
-                    {/*            <FormControl>*/}
-                    {/*                <Input type="date" {...field} />*/}
-                    {/*            </FormControl>*/}
-                    {/*            <FormMessage/>*/}
-                    {/*        </FormItem>*/}
-                    {/*    )}*/}
-                    {/*/>*/}
+                    <FormField
+                        control={form.control}
+                        name="dateOfBirth"
+                        render={({field}) => (
+                            <FormItem className="flex flex-col">
+                                <FormLabel>Date of birth</FormLabel>
+                                <Popover>
+                                    <PopoverTrigger asChild>
+                                        <FormControl>
+                                            <Button
+                                                variant={"outline"}
+                                                className={cn(
+                                                    "w-[240px] pl-3 text-left font-normal",
+                                                    !field.value && "text-muted-foreground"
+                                                )}
+                                            >
+                                                {field.value ? (
+                                                    format(field.value, "PPP")
+                                                ) : (
+                                                    <span>Pick a date</span>
+                                                )}
+                                                <CalendarIcon className="ml-auto h-4 w-4 opacity-50"/>
+                                            </Button>
+                                        </FormControl>
+                                    </PopoverTrigger>
+                                    <PopoverContent className="w-auto p-0" align="start">
+                                        <Calendar
+                                            mode="single"
+                                            selected={field.value}
+                                            onSelect={field.onChange}
+                                            disabled={(date) =>
+                                                date > new Date() || date < new Date("1900-01-01")
+                                            }
+                                            initialFocus
+                                        />
+                                    </PopoverContent>
+                                </Popover>
+                                <FormMessage/>
+                            </FormItem>
+                        )}
+                    />
 
                     <FormField
                         control={form.control}
@@ -134,19 +211,30 @@ export default function UserForm() {
                     />
 
 
-                    {/*<FormField*/}
-                    {/*    control={form.control}*/}
-                    {/*    name="crops"*/}
-                    {/*    render={({field}) => (*/}
-                    {/*        <FormItem>*/}
-                    {/*            <FormLabel>Cultivos</FormLabel>*/}
-                    {/*            <FormControl>*/}
-                    {/*                <Input placeholder="Ingresa los cultivos (separados por comas)" {...field} />*/}
-                    {/*            </FormControl>*/}
-                    {/*            <FormMessage/>*/}
-                    {/*        </FormItem>*/}
-                    {/*    )}*/}
-                    {/*/>*/}
+                    <FormField
+                        control={form.control}
+                        name="crops"
+                        render={({field}) => (
+                            <FormItem>
+                                <FormLabel>Crops</FormLabel>
+                                <FormControl>
+                                    <MultipleSelector
+                                        onChange={(value) => {
+                                            field.onChange(value.map((option) => option.value));
+                                        }}
+                                        defaultOptions={OPTIONS}
+                                        placeholder="Select crops..."
+                                        emptyIndicator={
+                                            <p className="text-center text-lg leading-10 text-gray-600 dark:text-gray-400">
+                                                No crops selected
+                                            </p>
+                                        }
+                                    />
+                                </FormControl>
+                                <FormMessage/>
+                            </FormItem>
+                        )}
+                    />
 
 
                 </div>

@@ -17,7 +17,7 @@ import * as React from "react"
 
 export function Navbar() {
     return (
-        <div className="w-full flex justify-center items-center font-[family-name:var(--font-geist-sans)] my-6">
+        <div className="w-full flex justify-center items-center font-[family-name:var(--font-geist-sans)] my-4">
             <NavigationMenu>
                 <NavigationMenuList>
                     <NavigationMenuItem>
