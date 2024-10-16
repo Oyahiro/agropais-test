@@ -1,5 +1,7 @@
 "use client"
 
+import FamilyMemberDialog from "@/components/family-member/family-member-dialog";
+import FamilyMemberList from "@/components/family-member/family-member-list";
 import MultipleSelector from "@/components/system-design/multiple-selector";
 import {Button} from "@/components/ui/button";
 import {Calendar} from "@/components/ui/calendar";
@@ -13,14 +15,17 @@ import WorkersFormSection from "@/components/users/workers-form-section";
 import {cn} from "@/lib/utils";
 import {OPTIONS, UserFormData, userValidationSchema} from "@/utils/validation-schemas";
 import {yupResolver} from "@hookform/resolvers/yup";
-import {CalendarIcon} from "@radix-ui/react-icons";
-import {format} from "date-fns";
+import {CalendarIcon, PlusIcon} from "@radix-ui/react-icons";
+import {format, subDays} from "date-fns";
 import {AnimatePresence, motion} from "framer-motion";
-import {useEffect} from "react";
+import * as React from "react";
+import {useEffect, useState} from "react";
 import {useForm} from "react-hook-form";
 
 
 export default function UserForm() {
+    const [open, setOpen] = useState(false);
+
     const form = useForm<UserFormData>({
         resolver: yupResolver(userValidationSchema),
         defaultValues: {
@@ -171,15 +176,31 @@ export default function UserForm() {
                                         </FormControl>
                                     </PopoverTrigger>
                                     <PopoverContent className="w-auto p-0" align="start">
-                                        <Calendar
-                                            mode="single"
-                                            selected={field.value}
-                                            onSelect={field.onChange}
-                                            disabled={(date) =>
-                                                date > new Date() || date < new Date("1900-01-01")
+                                        <Select
+                                            onValueChange={(value) =>
+                                                setValue("dateOfBirth", subDays(new Date(), Number(value)))
                                             }
-                                            initialFocus
-                                        />
+                                        >
+                                            <SelectTrigger>
+                                                <SelectValue placeholder="Select"/>
+                                            </SelectTrigger>
+                                            <SelectContent position="popper">
+                                                <SelectItem value="0">Today</SelectItem>
+                                                <SelectItem value="7300">20 years ago</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                        <div className="rounded-md border">
+                                            <Calendar
+                                                mode="single"
+                                                selected={field.value}
+                                                onSelect={field.onChange}
+                                                disabled={(date) =>
+                                                    date > new Date() || date < new Date("1900-01-01")
+                                                }
+                                                initialFocus
+                                            />
+
+                                        </div>
                                     </PopoverContent>
                                 </Popover>
                                 <FormMessage/>
@@ -337,8 +358,17 @@ export default function UserForm() {
                     )}
                 </AnimatePresence>
 
+                <Button variant="outline" className="flex gap-4 items-center" type="button"
+                        onClick={() => setOpen(true)}>
+                    <PlusIcon className="h-4 w-4"/>
+                    <span className="text-sm">Add family member</span>
+                </Button>
+
+                <FamilyMemberList form={form}/>
+
                 <Button className="mt-8" type="submit" variant="outline">Save</Button>
             </form>
+            <FamilyMemberDialog open={open} setOpen={setOpen} form={form}/>
         </Form>
     );
 }

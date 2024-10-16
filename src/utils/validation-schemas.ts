@@ -8,6 +8,15 @@ export const OPTIONS = [
     {value: 'strawberry', label: 'Strawberry'},
 ];
 
+export const familyMemberSchema = yup.object().shape({
+    name: yup.string().required("The family member's name is obligatory"),
+    lastName: yup.string().required("The family member's last name is obligatory"),
+    ci: yup
+        .string()
+        .required("The family member's identity card is obligatory")
+        .matches(/^\d{10}$/, "The identity card must have 10 digits"),
+});
+
 export const userValidationSchema = yup.object().shape({
     name: yup.string().required('The name is obligatory'),
     lastName: yup.string().required('The last name is obligatory'),
@@ -158,6 +167,12 @@ export const userValidationSchema = yup.object().shape({
             then: (schema) => schema.required('The occupation of the pregnant workers is obligatory'),
             otherwise: (schema) => schema.notRequired(),
         }),
+    family: yup
+        .array()
+        .of(familyMemberSchema)
+        .min(1, 'You must provide at least one family member')
+        .required('The family information is obligatory'),
 });
 
 export type UserFormData = yup.InferType<typeof userValidationSchema>;
+export type FamilyMemberFormData = yup.InferType<typeof familyMemberSchema>;
