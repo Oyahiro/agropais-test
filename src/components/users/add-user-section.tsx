@@ -45,7 +45,7 @@ export default function AddUserSection() {
                                 <CardTitle className="text-lg">Add User</CardTitle>
                             </CardHeader>
                             <CardContent className="transition-opacity duration-300 ease-in-out opacity-100">
-                                <UserForm/>
+                                <UserForm toggleForm={toggleForm}/>
                             </CardContent>
                         </Card>
                     </motion.div>

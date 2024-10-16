@@ -16,8 +16,7 @@ export default function Home() {
                 />
                 <div className="flex flex-col">
                     <p>Hello, greetings from your future collaborator.</p>
-                    <p>Welcome to the main page of test system, you will see
-                        below.</p>
+                    <p>Oye Patricio, pensé en algo más gracioso que el 24, ¡25! ~Bob Esponja.</p>
                 </div>
             </main>
             <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
@@ -28,7 +27,6 @@ export default function Home() {
                     rel="noopener noreferrer"
                 >
                     <GitHubLogoIcon className="h-5 w-5"/>
-                    Code
                 </a>
                 <a
                     className="flex items-center gap-2 hover:underline hover:underline-offset-4"
@@ -37,7 +35,6 @@ export default function Home() {
                     rel="noopener noreferrer"
                 >
                     <LinkedInLogoIcon className="h-5 w-5"/>
-                    Curriculum
                 </a>
             </footer>
         </div>

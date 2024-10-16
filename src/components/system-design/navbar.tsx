@@ -42,18 +42,17 @@ export function Navbar() {
                                                 Users
                                             </div>
                                             <p className="text-sm leading-tight text-muted-foreground">
-                                                Main form, registers users in the system. This is the core of the system
-                                                and
-                                                contains all the requirements listed in the test.
+                                                No necesitas una licencia de conducir para manejar un sándwich. ~Bob
+                                                Esponja.
                                             </p>
                                         </a>
                                     </NavigationMenuLink>
                                 </li>
                                 <ListItem href="/family" title="Family">
-                                    Contains summarized data on users&apos; family members.
+                                    Calamardo, utilicé tu clarinete para destrabar el retrete. ~Bob Esponja
                                 </ListItem>
                                 <ListItem href="/crops" title="Crops">
-                                    Contains summary data on user&apos;s crops.
+                                    El picador, crimina, mutilador. ~Calamardo.
                                 </ListItem>
                             </ul>
                         </NavigationMenuContent>

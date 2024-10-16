@@ -20,11 +20,14 @@ import {CalendarIcon, PlusIcon} from "@radix-ui/react-icons";
 import {format, subDays} from "date-fns";
 import {AnimatePresence, motion} from "framer-motion";
 import * as React from "react";
-import {useEffect, useState} from "react";
+import {useCallback, useEffect, useState} from "react";
 import {useForm} from "react-hook-form";
 
+interface Props {
+    toggleForm: () => void;
+}
 
-export default function UserForm() {
+export default function UserForm({toggleForm}: Props) {
     const {toast} = useToast()
 
     const [open, setOpen] = useState(false);
@@ -129,10 +132,17 @@ export default function UserForm() {
 
             form.reset();
             setValue("crops", []);
+            toggleForm();
         } catch (error) {
             console.error("Error saving user:", error);
         }
     };
+
+    const onCancel = useCallback(() => {
+        form.reset();
+        setValue("crops", []);
+        toggleForm()
+    }, [toggleForm, form, setValue]);
 
     return (
         <Form {...form}>
@@ -396,7 +406,10 @@ export default function UserForm() {
 
                 <FamilyMemberList form={form}/>
 
-                <Button className="mt-8" type="submit" variant="outline">Save</Button>
+                <div className="flex justify-end gap-4">
+                    <Button className="mt-8" type="button" variant="outline" onClick={onCancel}>Cancel</Button>
+                    <Button className="mt-8" type="submit">Save</Button>
+                </div>
             </form>
             <FamilyMemberDialog open={open} setOpen={setOpen} form={form}/>
         </Form>
