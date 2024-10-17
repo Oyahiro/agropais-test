@@ -85,7 +85,7 @@ To run the development server, follow these steps:
 
 5. Open http://localhost:3000 in your browser to see the result.
 
-## Technologies Used
+## API Endpoints
 
 - GET /api/users: Retrieve a list of all users.
 - POST /api/users: Create a new user.
@@ -100,13 +100,13 @@ This project is deployed using [Vercel](https://vercel.com). To deploy your own 
 1. Push your code to a GitHub repository.
 2. Sign in to Vercel and import your repository.
 3. Follow the setup instructions, and Vercel will automatically build and deploy your app.
-4.
 
 ## Learn More
 
 To learn more about the tools and frameworks used in this project, check out the following resources:
 
 - [Next.js Documentation](https://nextjs.org/docs) - Learn about Next.js features and API.
+- [Supabase Documentation](https://supabase.com/docs) - Learn about Supabase features and API.
 - [Tailwind CSS Documentation](https://tailwindcss.com/docs) - Learn how to style your app with utility classes.
 - [Framer Motion Documentation](https://www.framer.com/motion/) - Learn how to create animations.
 - [React Hook Form Documentation](https://react-hook-form.com) - Learn about form handling in React.
