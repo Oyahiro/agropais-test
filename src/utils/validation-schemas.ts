@@ -15,7 +15,9 @@ export const familyMemberSchema = yup.object().shape({
     ci: yup
         .string()
         .required("The family member's identity card is obligatory")
-        .matches(/^\d{10}$/, "The identity card must have 10 digits"),
+        .test('identification-number', 'Invalid format', (value) => {
+            return validateIdentification(value);
+        }),
 });
 
 export const userValidationSchema = yup.object().shape({

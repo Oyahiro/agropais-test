@@ -351,7 +351,7 @@ const UserForm = ({toggleForm}: Props) => {
 
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-center">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 m-1 items-center">
                     <FormField
                         control={form.control}
                         name="hasRuc"
@@ -373,7 +373,7 @@ const UserForm = ({toggleForm}: Props) => {
                                 initial={{opacity: 0, height: 0}}
                                 animate={{opacity: 1, height: "auto"}}
                                 exit={{opacity: 0, height: 0}}
-                                className="overflow-hidden"
+                                className="overflow-hidden p-1"
                             >
                                 <FormField
                                     control={form.control}
@@ -414,7 +414,7 @@ const UserForm = ({toggleForm}: Props) => {
                             initial={{opacity: 0, height: 0}}
                             animate={{opacity: 1, height: "auto"}}
                             exit={{opacity: 0, height: 0}}
-                            className="overflow-hidden"
+                            className="overflow-hidden p-1"
                         >
                             <FarmFormSection form={form}/>
                         </motion.div>
@@ -442,7 +442,7 @@ const UserForm = ({toggleForm}: Props) => {
                             initial={{opacity: 0, height: 0}}
                             animate={{opacity: 1, height: "auto"}}
                             exit={{opacity: 0, height: 0}}
-                            className="overflow-hidden"
+                            className="overflow-hidden p-1"
                         >
                             <WorkersFormSection form={form}/>
                         </motion.div>

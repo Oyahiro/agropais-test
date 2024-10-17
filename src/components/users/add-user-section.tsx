@@ -51,7 +51,7 @@ export default function AddUserSection() {
                         initial={{opacity: 0, height: 0}}
                         animate={{opacity: 1, height: "auto"}}
                         exit={{opacity: 0, height: 0}}
-                        className="overflow-hidden w-full"
+                        className="overflow-hidden w-full p-1"
                     >
                         <Card className="shadow-lg w-full">
                             <CardHeader>

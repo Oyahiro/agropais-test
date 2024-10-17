@@ -96,7 +96,7 @@ export default function WorkersFormSection({form}: props) {
                         initial={{opacity: 0, height: 0}}
                         animate={{opacity: 1, height: "auto"}}
                         exit={{opacity: 0, height: 0}}
-                        className="overflow-hidden"
+                        className="overflow-hidden p-1"
                     >
                         <FormField
                             control={form.control}
@@ -137,7 +137,7 @@ export default function WorkersFormSection({form}: props) {
                         initial={{opacity: 0, height: 0}}
                         animate={{opacity: 1, height: "auto"}}
                         exit={{opacity: 0, height: 0}}
-                        className="overflow-hidden"
+                        className="overflow-hidden p-1"
                     >
                         <FormField
                             control={form.control}
@@ -146,7 +146,7 @@ export default function WorkersFormSection({form}: props) {
                                 <FormItem>
                                     <FormLabel>Quantity of pregnant workers</FormLabel>
                                     <FormControl>
-                                        <Input min={0} type="number"
+                                        <Input min={0} type="number" className="m-1"
                                                placeholder="Quantity of pregnant workers" {...field} />
                                     </FormControl>
                                     <FormMessage/>
@@ -164,7 +164,7 @@ export default function WorkersFormSection({form}: props) {
                         initial={{opacity: 0, height: 0}}
                         animate={{opacity: 1, height: "auto"}}
                         exit={{opacity: 0, height: 0}}
-                        className="overflow-hidden"
+                        className="overflow-hidden p-1"
                     >
                         <FormField
                             control={form.control}
